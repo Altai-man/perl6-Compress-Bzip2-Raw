@@ -80,9 +80,9 @@ our sub fopen(Str $filename, Str $mode) returns OpaquePointer is native() is exp
 our sub close(OpaquePointer $handle) is native() is export { * }
 
 # High-level helpers.
-our sub filename-to-info(Str $filename) is export {
+our sub name-to-compress-info(Str $filename) is export {
     # TODO: docs. This function provides all needed data to compress file.
-    my $handle = fopen(($filename ~~ m/.+\./) ~ "bz2", "wb");
+    my $handle = fopen($filename ~ ".bz2", "wb");
     my $blob = slurp $filename, :bin;
     my $len = $blob.elems;
     my @array = ($handle, $blob, $len);
