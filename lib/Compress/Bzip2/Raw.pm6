@@ -77,8 +77,8 @@ our sub bzWriteClose(int32 $bzerror is rw, OpaquePointer $bz, $abandon=0, $nbyte
 our sub BZ2_bzWriteClose64(int32 is rw, OpaquePointer, int32, Pointer[uint32], Pointer[uint32], Pointer[uint32], Pointer[uint32]) is native("bz2", v1) is export { * }
 
 ## Utility.
-our sub BZ2_bzBuffToBuffCompress(Blob, Pointer[uint32], Blob, uint32, int32, int32, int32) returns int32 is native("bz2", v1) { * }
-our sub BZ2_bzBuffToBuffDecompress(Blob, Pointer[uint32], Blob, uint32, int32, int32) returns int32 is native("bz2", v1) { * }
+our sub BZ2_bzBuffToBuffCompress(Blob, Pointer[uint32], Blob, uint32, int32, int32, int32) returns int32 is native("bz2", v1) is export { * }
+our sub BZ2_bzBuffToBuffDecompress(Blob, Pointer[uint32], Blob, uint32, int32, int32) returns int32 is native("bz2", v1) is export { * }
 our sub fopen(Str $filename, Str $mode) returns OpaquePointer is native() is export { * }
 our sub close(OpaquePointer $handle) is native() is export { * }
 
