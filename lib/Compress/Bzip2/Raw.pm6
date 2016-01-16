@@ -19,9 +19,19 @@ our class bz_stream is repr('CStruct') is export {
 
     has Pointer[void] $.state;
 
-    has Pointer[void] $.bzalloc;
-    has Pointer[void] $.bzfree;
-    has Pointer[void] $.opaque;
+    has Pointer[void] $.bzalloc is rw;
+    has Pointer[void] $.bzfree is rw;
+    has Pointer[void] $.opaque is rw;
+
+    method set-input(Blob $stuff){
+        $!next-in := nativecast CArray[uint8], $stuff;
+        $!avail-in = $stuff.bytes;
+    }
+
+    method set-output(Blob $stuff){
+        $!next-out := nativecast CArray[uint8], $stuff;
+        $!avail-out = $stuff.bytes;
+    }
 }
 
 # constants
