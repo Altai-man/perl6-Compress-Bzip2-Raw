@@ -1,15 +1,18 @@
 {
-    "perl": "6.*",
-    "name" : "Compress::Bzip2::Raw",
-    "license" : "Artistic-2.0",
-    "tags": ["Compression", "NativeCall"],
-    "version" : "0.2.0",
-    "author" : "github:Altai-man",
-    "description" : "Low-level bindings to libbzip2",
-    "depends" : [],
-    "provides" : {
-        "Compress::Bzip2::Raw" : "lib/Compress/Bzip2/Raw.pm6"
-    },
-    "resources": [],
-    "source-url" : "git://github.com/Altai-man/perl6-Compress-Bzip2-Raw.git"
+  "name": "Compress::Bzip2::Raw",
+  "description": "Low-level bindings to libbzip2",
+  "version": "0.2.0",
+  "perl": "6.*",
+  "auth": "github:Altai-man",
+  "depends": [],
+  "provides": {
+    "Compress::Bzip2::Raw": "lib/Compress/Bzip2/Raw.pm6"
+  },
+  "resources": [],
+  "license": "Artistic-2.0",
+  "tags": [
+    "Compression",
+    "NativeCall"
+  ],
+  "source-url": "git://github.com/Altai-man/perl6-Compress-Bzip2-Raw.git"
 }
