@@ -12,7 +12,7 @@ my $size = $write_buffer.elems;
 ## Writing.
 # Open.
 my $handle = fopen("/tmp/test.bz2", "wb");
-diag "Handle from fopen is $handle";
+diag "Handle from fopen is { $handle.say }";
 my $bz = bzWriteOpen($bzerror, $handle, 1, 0, 0);
 is $bzerror, BZ_OK, 'Stream was opened.'
   or diag "bzWriteOpen returned $bzerror";
