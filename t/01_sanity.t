@@ -4,6 +4,8 @@ use NativeCall;
 use Compress::Bzip2::Raw;
 plan *;
 
+my $filename = "test.bz2";
+
 my int32 $bzerror;
 my $text = "Text string.";
 my buf8 $write_buffer = buf8.new($text.encode);
@@ -11,7 +13,7 @@ my $size = $write_buffer.elems;
 
 ## Writing.
 # Open.
-my $handle = fopen("/tmp/test.bz2", "wb");
+my $handle = fopen($filename, "wb");
 diag "Handle from fopen is { $handle.say }";
 my $bz = bzWriteOpen($bzerror, $handle, 1, 0, 0);
 is $bzerror, BZ_OK, 'Stream was opened.'
@@ -30,7 +32,7 @@ fclose($handle);
 
 ## Reading.
 # Opening.
-$handle = fopen("/tmp/test.bz2", "rb");
+$handle = fopen($filename, "rb");
 $bz = bzReadOpen($bzerror, $handle);
 ok $bzerror == BZ_OK, 'Stream was opened.';
 if $bzerror != BZ_OK { BZ2_bzReadClose($bzerror, $bz) }
