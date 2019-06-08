@@ -5,6 +5,7 @@ use Compress::Bzip2::Raw;
 plan *;
 
 my $filename = $*TMPDIR ~ "/test.bz2";
+diag "Filename is '{ $filename }'";
 
 my int32 $bzerror;
 my $text = "Text string.";
@@ -14,7 +15,6 @@ my $size = $write_buffer.elems;
 ## Writing.
 # Open.
 my $handle = fopen($filename, "wb");
-diag "Handle from fopen is { $handle.say }";
 my $bz = bzWriteOpen($bzerror, $handle, 1, 0, 0);
 is $bzerror, BZ_OK, 'Stream was opened.'
   or diag "bzWriteOpen returned $bzerror";
