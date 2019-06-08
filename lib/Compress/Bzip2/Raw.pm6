@@ -74,7 +74,7 @@ our sub BZ2_bzReadClose(int32 is rw, Pointer[void]) is native("bz2", v1) is expo
 our sub BZ2_bzReadGetUnused(int32 is rw, Pointer[void], Pointer, int32 is rw) is native("bz2", v1) is export { * }
 # Writing.
 our sub BZ2_bzWriteOpen(int32 is rw, OpaquePointer, int32, int32, int32) returns OpaquePointer is native("bz2", v1) { * }
-our sub bzWriteOpen(int32 $bzerror is rw, OpaquePointer $file, $blockSize100k=6, $verbosity=0, $workFactor=0) is export {
+our sub bzWriteOpen(int32 $bzerror is rw, OpaquePointer $file, $blockSize100k = 6, $verbosity = 0, $workFactor = 0) is export {
     BZ2_bzWriteOpen($bzerror, $file, $blockSize100k, $verbosity, $workFactor);
 }
 our sub BZ2_bzWrite(int32 is rw, OpaquePointer, Blob, int32) is native("bz2", v1) is export { * }
