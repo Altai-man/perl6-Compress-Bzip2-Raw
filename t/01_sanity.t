@@ -24,7 +24,7 @@ if $bzerror == BZ_IO_ERROR { bzWriteClose($bzerror, $bz) }
 # Closing.
 bzWriteClose($bzerror, $bz);
 ok $bzerror == BZ_OK, 'Stream was closed properly.';
-close($handle);
+fclose($handle);
 
 ## Reading.
 # Opening.
@@ -45,6 +45,6 @@ is $decoded_text, $text, 'Text is correct.';
 # Closing.
 BZ2_bzReadClose($bzerror, $bz);
 ok $bzerror == BZ_OK, 'Stream was closed properly.';
-close($handle);
+fclose($handle);
 
 done-testing;
