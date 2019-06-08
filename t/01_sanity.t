@@ -13,7 +13,8 @@ my $size = $write_buffer.elems;
 # Open.
 my $handle = fopen("/tmp/test.bz2", "wb");
 my $bz = bzWriteOpen($bzerror, $handle);
-ok $bzerror == BZ_OK, 'Stream was opened.';
+is $bzerror, BZ_OK, 'Stream was opened.'
+  or diag "bzWriteOpen returned $bzerror";
 if $bzerror != BZ_OK { bzWriteClose($bzerror, $bz) };
 
 # Writing.
