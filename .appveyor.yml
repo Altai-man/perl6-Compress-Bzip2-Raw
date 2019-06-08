@@ -43,6 +43,7 @@ environment:
 
 install:
   - vcpkg install bzip2:x64-windows
+  - SET PATH=C:\vcpkg\installed\x64-windows\bin;%PATH%
   # Install Strawberry Perl with chocolately.
   # Strawberry Perl comes with `prove`, which we use to run the tests.
   # http://strawberryperl.com
