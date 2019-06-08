@@ -4,8 +4,7 @@ use NativeCall;
 use Compress::Bzip2::Raw;
 plan *;
 
-my $filename = $*TMPDIR ~ "/test.bz2";
-diag "Filename is '{ $filename }'";
+constant $file-location = $*TMPDIR.child('test.bz2');
 
 my int32 $bzerror;
 my $text = "Text string.";
@@ -14,7 +13,7 @@ my $size = $write_buffer.elems;
 
 ## Writing.
 # Open.
-my $handle = fopen($filename, "wb");
+my $handle = fopen($file-location.Str, "wb");
 my $bz = bzWriteOpen($bzerror, $handle, 1, 0, 0);
 is $bzerror, BZ_OK, 'Stream was opened.'
   or diag "bzWriteOpen returned $bzerror";
@@ -32,7 +31,7 @@ is fclose($handle), 0, "fclose returned 0";
 
 ## Reading.
 # Opening.
-$handle = fopen($filename, "rb");
+$handle = fopen($file-location.Str, "rb");
 $bz = bzReadOpen($bzerror, $handle);
 ok $bzerror == BZ_OK, 'Stream was opened.';
 if $bzerror != BZ_OK { BZ2_bzReadClose($bzerror, $bz) }
