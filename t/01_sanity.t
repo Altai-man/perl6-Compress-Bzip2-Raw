@@ -5,13 +5,14 @@ use Compress::Bzip2::Raw;
 plan *;
 
 my int32 $bzerror;
+constant $file-location = $*TMPDIR.child('test.bz2');
 my $text = "Text string.";
 my buf8 $write_buffer = buf8.new($text.encode);
 my $size = $write_buffer.elems;
 
-## Writing.
+# Writing.
 # Open.
-my $handle = fopen("/tmp/test.bz2", "wb");
+my $handle = fopen($file-location.Str, "wb");
 my $bz = bzWriteOpen($bzerror, $handle);
 ok $bzerror == BZ_OK, 'Stream was opened.';
 if $bzerror != BZ_OK { bzWriteClose($bzerror, $bz) };
@@ -26,9 +27,9 @@ bzWriteClose($bzerror, $bz);
 ok $bzerror == BZ_OK, 'Stream was closed properly.';
 fclose($handle);
 
-## Reading.
+# Reading.
 # Opening.
-$handle = fopen("/tmp/test.bz2", "rb");
+$handle = fopen($file-location.Str, "rb");
 $bz = bzReadOpen($bzerror, $handle);
 ok $bzerror == BZ_OK, 'Stream was opened.';
 if $bzerror != BZ_OK { BZ2_bzReadClose($bzerror, $bz) }
