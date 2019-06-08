@@ -4,7 +4,7 @@ use NativeCall;
 use Compress::Bzip2::Raw;
 plan *;
 
-my $filename = "test.bz2";
+my $filename = $*TMPDIR ~ "/test.bz2";
 
 my int32 $bzerror;
 my $text = "Text string.";
