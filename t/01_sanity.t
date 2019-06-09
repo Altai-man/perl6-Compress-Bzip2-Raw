@@ -4,8 +4,6 @@ use NativeCall;
 use Compress::Bzip2::Raw;
 plan *;
 
-constant $file-location = $*TMPDIR.child('test.bz2');
-
 my int32 $bzerror;
 constant $file-location = $*TMPDIR.child('test.bz2');
 my $text = "Text string.";
