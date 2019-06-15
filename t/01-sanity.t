@@ -4,7 +4,7 @@ use NativeCall;
 use Compress::Bzip2::Raw;
 plan *;
 
-if !$*DISTRO.is-win {
+if $*VM.osname eq 'linux' {
     # File testing
     my int32 $bzerror;
     constant $file-location = $*TMPDIR.child('test.bz2');
@@ -46,6 +46,8 @@ if !$*DISTRO.is-win {
     BZ2_bzReadClose($bzerror, $bz);
     ok $bzerror == BZ_OK, 'Stream was closed properly';
     is fclose($handle), 0, "fclose returned 0";
+} else {
+    pass 'Tests are skipped for everything that is not GNU/Linux';
 }
 
 done-testing;
