@@ -90,18 +90,17 @@ sub fclose(OpaquePointer $handle) returns int32 is native(Str) { * }
 
 # High-level helpers.
 sub name-to-compress-info(Str $filename) {
-    # TODO: docs. This function provides all needed data to compress file.
     my $handle = fopen($filename ~ ".bz2", "wb");
     my $blob = slurp $filename, :bin;
     my $len = $blob.elems;
-    my @array = ($handle, $blob, $len);
+    $handle, $blob, $len;
 }
 
 sub name-to-decompress-info(Str $filename) {
     my $handle = fopen($filename, "rb");
     my Str $output = ($filename ~~ m/(.+).bz2/)[0].Str;
     my $fd = open $output, :w, :bin;
-    my @array = ($handle, $fd);
+    $handle, $fd;
 }
 
 my %all-symbols = MY::.grep({ .key ~~ /:i 'bz'/ || .key eq '&fopen'|'&fclose' });

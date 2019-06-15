@@ -5,49 +5,46 @@ use Compress::Bzip2::Raw;
 plan *;
 
 if !$*DISTRO.is-win {
+    # File testing
     my int32 $bzerror;
     constant $file-location = $*TMPDIR.child('test.bz2');
     my $text = "Text string.";
-    my buf8 $write_buffer = buf8.new($text.encode);
-    my $size = $write_buffer.elems;
+    my buf8 $write-buffer = buf8.new($text.encode);
 
-    # Writing.
-    # Open.
+    # Open a handle to write to
     my $handle = fopen($file-location.Str, "wb");
     my $bz = bzWriteOpen($bzerror, $handle);
-    is $bzerror, BZ_OK, 'Stream was opened.'
+    is $bzerror, BZ_OK, 'Stream was opened'
             or diag "bzWriteOpen returned $bzerror";
-    if $bzerror != BZ_OK { bzWriteClose($bzerror, $bz) };
+    bzWriteClose($bzerror, $bz) if $bzerror != BZ_OK;
 
-    # Writing.
-    BZ2_bzWrite($bzerror, $bz, $write_buffer, $size);
-    ok $bzerror == BZ_OK, 'No errors in writing.';
-    if $bzerror == BZ_IO_ERROR { bzWriteClose($bzerror, $bz) }
+    # Write to the handle
+    BZ2_bzWrite($bzerror, $bz, $write-buffer, $write-buffer.elems);
+    ok $bzerror == BZ_OK, 'No errors in writing';
+    bzWriteClose($bzerror, $bz) if $bzerror != BZ_OK;
 
-    # Closing.
+    # Closing the handle
     bzWriteClose($bzerror, $bz);
-    ok $bzerror == BZ_OK, 'Stream was closed properly.';
+    ok $bzerror == BZ_OK, 'Stream was closed properly';
     is fclose($handle), 0, "fclose returned 0";
 
-    # Reading.
-    # Opening.
+    # Open a handle to read from
     $handle = fopen($file-location.Str, "rb");
     $bz = bzReadOpen($bzerror, $handle);
-    ok $bzerror == BZ_OK, 'Stream was opened.';
-    if $bzerror != BZ_OK { BZ2_bzReadClose($bzerror, $bz) }
+    ok $bzerror == BZ_OK, 'Stream was opened';
+    bzWriteClose($bzerror, $bz) if $bzerror != BZ_OK;
 
-    # Reading.
-    my $read_buffer = buf8.new();
-    $read_buffer[$size-1] = 0;
-    my $len = BZ2_bzRead($bzerror, $bz, $read_buffer, $size);
+    # Read from the handle
+    my $read-buffer = buf8.new;
+    $read-buffer[($write-buffer.elems)-1] = 0;
+    my $len = BZ2_bzRead($bzerror, $bz, $read-buffer, $write-buffer.elems);
     ok $bzerror == BZ_STREAM_END, 'No errors at reading';
 
-    my $decoded_text = $read_buffer.decode;
-    is $decoded_text, $text, 'Text is correct.';
+    is $read-buffer.decode, $text, 'Text is correct';
 
-    # Closing.
+    # Closing the handle
     BZ2_bzReadClose($bzerror, $bz);
-    ok $bzerror == BZ_OK, 'Stream was closed properly.';
+    ok $bzerror == BZ_OK, 'Stream was closed properly';
     is fclose($handle), 0, "fclose returned 0";
 }
 
