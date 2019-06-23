@@ -1,7 +1,7 @@
 {
   "name": "Compress::Bzip2::Raw",
   "description": "Low-level bindings to libbzip2",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "perl": "6.*",
   "auth": "github:Altai-man",
   "depends": [],
