@@ -103,7 +103,7 @@ sub name-to-decompress-info(Str $filename) {
     $handle, $fd;
 }
 
-my %all-symbols = MY::.grep({ .key ~~ /:i 'bz'/ || .key eq '&fopen'|'&fclose' });
+my %all-symbols = MY::.grep({ .key ~~ /:i 'bz'|'name'/ || .key eq '&fopen'|'&fclose' });
 my %win-symbols = MY::.grep({ .key ~~ /:i 'BuzzToBuff'/ });
 
 sub EXPORT {
