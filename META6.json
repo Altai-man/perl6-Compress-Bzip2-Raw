@@ -3,7 +3,7 @@
   "description": "Low-level bindings to libbzip2",
   "version": "0.2.2",
   "perl": "6.*",
-  "auth": "github:Altai-man",
+  "auth": "zef:Altai-man",
   "depends": [],
   "provides": {
     "Compress::Bzip2::Raw": "lib/Compress/Bzip2/Raw.pm6"
