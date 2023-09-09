@@ -1,6 +1,36 @@
 use v6;
 use NativeCall;
 
+# derived from https://github.com/retupmoca/P6-Compress-Zlib-Raw/blob/master/lib/Compress/Zlib/Raw.pm6
+sub find-lib {
+    state $lib;
+    unless $lib {
+        if $*VM.config<dll> ~~ /dll/ {
+            # $lib = 'bz2.dll';
+            $lib = ~(%?RESOURCES{"bz2.dll"});
+        } elsif $*VM.config<dll> ~~ /so$/ {
+            $lib = 'libbz2.so.1';
+        } elsif $*VM.config<dll> ~~ /dylib$/ {
+            $lib = 'libbz2.dylib';
+        } else {
+            $lib = 'libbz2';
+        }
+    }
+    $lib
+}
+
+sub find-lib-for-fopen {
+    state $lib;
+    unless $lib {
+        if $*VM.config<dll> ~~ /dll/ {
+            $lib = 'ucrtbase.dll';
+        } else {
+            $lib = '';
+        }
+    }
+    $lib
+}
+
 # structs and pointers.
 my class bz_stream is repr('CStruct') {
     has CArray[uint8] $.next-in;
@@ -53,40 +83,40 @@ my constant BZ_CONFIG_ERROR = (-9);
 
 ## Low-level.
 # Compress.
-sub BZ2_bzCompressInit(bz_stream, int32, int32, int32) returns int32 is native("bz2", v1) { * }
-sub BZ2_bzCompress(bz_stream, int32) returns int32 is native("bz2", v1) { * }
-sub BZ2_bzCompressEnd(bz_stream) returns int32 is native("bz2", v1) { * }
+sub BZ2_bzCompressInit(bz_stream, int32, int32, int32) returns int32 is native(&find-lib) { * }
+sub BZ2_bzCompress(bz_stream, int32) returns int32 is native(&find-lib) { * }
+sub BZ2_bzCompressEnd(bz_stream) returns int32 is native(&find-lib) { * }
 # Decompress.
-sub BZ2_bzDecompressInit(bz_stream, int32, int32) returns int32 is native("bz2", v1) { * }
-sub BZ2_bzDecompress(bz_stream) returns int32 is native("bz2", v1) { * }
-sub BZ2_bzDecompressEnd(bz_stream) returns int32 is native("bz2", v1) { * }
+sub BZ2_bzDecompressInit(bz_stream, int32, int32) returns int32 is native(&find-lib) { * }
+sub BZ2_bzDecompress(bz_stream) returns int32 is native(&find-lib) { * }
+sub BZ2_bzDecompressEnd(bz_stream) returns int32 is native(&find-lib) { * }
 
 ## High-level.
 # Reading.
-sub BZ2_bzReadOpen(int32 is rw, OpaquePointer, int32, int32, Pointer[uint8], int32) returns OpaquePointer is native("bz2", v1) { * }
+sub BZ2_bzReadOpen(int32 is rw, OpaquePointer, int32, int32, Pointer[uint8], int32) returns OpaquePointer is native(&find-lib) { * }
 sub bzReadOpen(int32 $bzerror is rw, OpaquePointer $file, $verbosity=0, $small=0, $unused=Pointer[uint32], $nUnused=0) {
     BZ2_bzReadOpen($bzerror, $file, $verbosity, $small, $unused, $nUnused);
 }
-sub BZ2_bzRead(int32 is rw, OpaquePointer, Blob, int32) returns int32 is native("bz2", v1){ * }
-sub BZ2_bzReadClose(int32 is rw, Pointer[void]) is native("bz2", v1) { * }
-sub BZ2_bzReadGetUnused(int32 is rw, Pointer[void], Pointer, int32 is rw) is native("bz2", v1) { * }
+sub BZ2_bzRead(int32 is rw, OpaquePointer, Blob, int32) returns int32 is native(&find-lib){ * }
+sub BZ2_bzReadClose(int32 is rw, Pointer[void]) is native(&find-lib) { * }
+sub BZ2_bzReadGetUnused(int32 is rw, Pointer[void], Pointer, int32 is rw) is native(&find-lib) { * }
 # Writing.
-sub BZ2_bzWriteOpen(int32 is rw, OpaquePointer, int32, int32, int32) returns OpaquePointer is native("bz2", v1) { * }
+sub BZ2_bzWriteOpen(int32 is rw, OpaquePointer, int32, int32, int32) returns OpaquePointer is native(&find-lib) { * }
 sub bzWriteOpen(int32 $bzerror is rw, OpaquePointer $file, $blockSize100k = 6, $verbosity = 0, $workFactor = 0) {
     BZ2_bzWriteOpen($bzerror, $file, $blockSize100k, $verbosity, $workFactor);
 }
-sub BZ2_bzWrite(int32 is rw, OpaquePointer, Blob, int32) is native("bz2", v1) { * }
-sub BZ2_bzWriteClose(int32 is rw, Pointer, int32, Pointer[uint32], Pointer[uint32]) is native("bz2", v1) { * }
+sub BZ2_bzWrite(int32 is rw, OpaquePointer, Blob, int32) is native(&find-lib) { * }
+sub BZ2_bzWriteClose(int32 is rw, Pointer, int32, Pointer[uint32], Pointer[uint32]) is native(&find-lib) { * }
 sub bzWriteClose(int32 $bzerror is rw, OpaquePointer $bz, $abandon=0, $nbytes_in=Pointer[uint32], $nbytes_out=Pointer[uint32]) {
     BZ2_bzWriteClose($bzerror, $bz, $abandon, $nbytes_in, $nbytes_out);
 }
-sub BZ2_bzWriteClose64(int32 is rw, OpaquePointer, int32, Pointer[uint32], Pointer[uint32], Pointer[uint32], Pointer[uint32]) is native("bz2", v1) { * }
+sub BZ2_bzWriteClose64(int32 is rw, OpaquePointer, int32, Pointer[uint32], Pointer[uint32], Pointer[uint32], Pointer[uint32]) is native(&find-lib) { * }
 
 ## Utility.
-sub BZ2_bzBuffToBuffCompress(Blob, uint32 is rw, Blob, uint32, int32, int32, int32) returns int32 is native("bz2", v1) { * }
-sub BZ2_bzBuffToBuffDecompress(Blob, uint32 is rw, Blob, uint32, int32, int32) returns int32 is native("bz2", v1) { * }
-sub fopen(Str $filename, Str $mode) returns OpaquePointer is native(Str) { * }
-sub fclose(OpaquePointer $handle) returns int32 is native(Str) { * }
+sub BZ2_bzBuffToBuffCompress(Blob, uint32 is rw, Blob, uint32, int32, int32, int32) returns int32 is native(&find-lib) { * }
+sub BZ2_bzBuffToBuffDecompress(Blob, uint32 is rw, Blob, uint32, int32, int32) returns int32 is native(&find-lib) { * }
+sub fopen(Str $filename, Str $mode) returns OpaquePointer is native(&find-lib-for-fopen) { * }
+sub fclose(OpaquePointer $handle) returns int32 is native(&find-lib-for-fopen) { * }
 
 # High-level helpers.
 sub name-to-compress-info(Str $filename) {
@@ -104,8 +134,7 @@ sub name-to-decompress-info(Str $filename) {
 }
 
 my %all-symbols = MY::.grep({ .key ~~ /:i 'bz'|'name'/ || .key eq '&fopen'|'&fclose' });
-my %win-symbols = MY::.grep({ .key ~~ /:i 'BuzzToBuff'/ });
 
 sub EXPORT {
-    $*DISTRO.is-win ?? %win-symbols !! %all-symbols;
+     %all-symbols ;
 }
