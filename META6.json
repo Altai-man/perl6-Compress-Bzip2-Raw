@@ -1,14 +1,14 @@
 {
   "name": "Compress::Bzip2::Raw",
   "description": "Low-level bindings to libbzip2",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "perl": "6.*",
   "auth": "zef:Altai-man",
   "depends": [],
   "provides": {
     "Compress::Bzip2::Raw": "lib/Compress/Bzip2/Raw.pm6"
   },
-  "resources": [],
+  "resources": [ "bz2.dll" ],
   "license": "Artistic-2.0",
   "tags": [
     "Compression",
